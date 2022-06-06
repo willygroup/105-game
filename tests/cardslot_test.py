@@ -2,7 +2,7 @@ import unittest
 import os
 
 
-from modules.cardslot_mod import CardSlot
+from modules.card_slot_mod import CardSlot
 
 from unittest import TestCase
 
@@ -20,7 +20,6 @@ good_args_list = [
     (2, 2),
     (3, 3),
     (4, 4),
-    (5, 5),
 ]
 
 # (showed_value, real_value, n_cards, flashing, busted),<card>, expected
@@ -54,7 +53,7 @@ class CardBoxModule(unittest.TestCase):
         for input, expected in good_args_list:
             with self.subTest():
                 card = CardSlot(input)
-                self.assertEqual(card._id, expected)
+                self.assertEqual(card.id, expected)
 
     def test_add_card(self):
         for input, card_value, expected in add_card_list:
@@ -67,25 +66,14 @@ class CardBoxModule(unittest.TestCase):
                 card.flashing = input[3]
                 card.busted = input[4]
 
-                card.add_card(card_value)
+                res = card.add_card(card_value)
 
                 self.assertEqual(card.showed_value, expected[0])
                 self.assertEqual(card.real_value, expected[1])
                 self.assertEqual(card.n_cards, expected[2])
                 self.assertEqual(card.flashing, expected[3])
                 self.assertEqual(card.busted, expected[4])
-
-    def test_add_card_empty(self):
-
-        card = CardSlot(0)
-
-        card.add_card(8)
-
-        self.assertEqual(card.showed_value, 8)
-        self.assertEqual(card.real_value, 8)
-        self.assertEqual(card.n_cards, 1)
-        self.assertFalse(card.flashing)
-        self.assertFalse(card.busted)
+                self.assertEqual(res, not expected[4])
 
 
 if __name__ == "__main__":

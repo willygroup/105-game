@@ -1,10 +1,12 @@
 class CardSlot:
-    """ """
+    """
+    This represents a single card slot behavior
+    """
 
     def __init__(self, id: int):
-        if type(id) != int or (id not in range(0, 6)):
-            raise TypeError("id should be an integer between 0 and 5")
-        self._id = id
+        if type(id) != int or (id not in range(0, 5)):
+            raise TypeError("id should be an integer between 0 and 4")
+        self.id = id
         self.showed_value = 0
         self.real_value = 0
         self.n_cards = 0
@@ -36,9 +38,10 @@ class CardSlot:
                 self.real_value = self.real_value + 1 - 10
             self.flashing = False
 
-    def add_card(self, card_value: int):
+    def add_card(self, card_value: int) -> bool:
         """
         Add a card to the CardBox
+        return False if busted
         """
         if self.flashing:
             self._add_card_on_flashing(card_value)
@@ -58,6 +61,8 @@ class CardSlot:
             self.busted = True
         elif self.n_cards >= 5 and self.real_value <= 21:
             self.showed_value = 21
+
+        return not self.is_busted()
 
     def is_busted(self):
         """
