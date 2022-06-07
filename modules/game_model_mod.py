@@ -2,7 +2,7 @@ from random import seed
 from random import randint
 from datetime import datetime
 
-from modules.slots_mod import Slots
+from modules.card_slot_mod import CardSlot
 
 
 class GameModel:
@@ -11,25 +11,44 @@ class GameModel:
     """
 
     def __init__(self) -> None:
-        self._slots = Slots()
+        self._slots = (
+            CardSlot(0),
+            CardSlot(1),
+            CardSlot(2),
+            CardSlot(3),
+            CardSlot(4),
+        )
 
-    def get_total(self) -> int:
-        return self._slots.get_total()
-
-    def a_slot_is_flashing(self) -> bool:
-        return self._slots.is_flashing()
-
-    # TODO
-    def is_busted():
-        pass
+    def add_card_to_slot(self, slot_id: int, card_value: int) -> bool:
+        """
+        Add a card_value to a slot and return the `busted` status
+        """
+        return self._slots[slot_id].add_card(card_value)
 
     def get_slots(self):
-        return self._slots.get_slots()
+        return self._slots
 
-    def add_card_to_slot(self, id, card_value):
-        return self._slots.add_card_to_slot(id, card_value)
+    def get_total(self) -> int:
+        """
+        Get the total value
+        """
+        total = 0
+        for slot in self._slots:
+            total += slot.showed_value
+        return total
 
-    # TODO
+    def a_slot_is_flashing(self) -> bool:
+        for slot in self._slots:
+            if slot.flashing:
+                return True
+        return False
+
+    def is_busted(self):
+        for slot in self._slots:
+            if slot.is_busted:
+                return True
+        return False
+
     @staticmethod
     def draw_a_card():
         """
