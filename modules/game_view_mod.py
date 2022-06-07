@@ -14,10 +14,10 @@ class GameView:
                 suffix = "*"
             elif slot.is_busted():
                 suffix = "#"
-            slot_txt += f"[{slot.showed_value}{suffix}]"
+            slot_txt += f"[{slot.shown_value}{suffix}]"
             if slot.id != len(slots) - 1:
                 slot_txt += " "
-            total += slot.showed_value
+            total += slot.shown_value
         print(f"{slot_txt} - Total: {total}")
 
     def show_drawn_card(self, card_value):

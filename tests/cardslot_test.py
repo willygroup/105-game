@@ -22,7 +22,7 @@ good_args_list = [
     (4, 4),
 ]
 
-# (showed_value, real_value, n_cards, flashing, busted),<card>, expected
+# (shown_value, real_value, n_cards, flashing, busted),<card>, expected
 add_card_list = [
     ((3, 3, 1, False, False), 5, (8, 8, 2, False, False)),
     ((3, 3, 1, False, False), 11, (14, 14, 2, True, False)),
@@ -37,7 +37,7 @@ add_card_list = [
 ]
 
 
-class CardBoxModule(unittest.TestCase):
+class CardBoxModule(TestCase):
     def get_dirname(self) -> str:
         dirname = os.path.realpath(__file__)
         dirname = os.path.split(dirname)[0]
@@ -60,7 +60,7 @@ class CardBoxModule(unittest.TestCase):
             with self.subTest():
                 card = CardSlot(0)
 
-                card.showed_value = input[0]
+                card.shown_value = input[0]
                 card.real_value = input[1]
                 card.n_cards = input[2]
                 card.flashing = input[3]
@@ -68,7 +68,7 @@ class CardBoxModule(unittest.TestCase):
 
                 res = card.add_card(card_value)
 
-                self.assertEqual(card.showed_value, expected[0])
+                self.assertEqual(card.shown_value, expected[0])
                 self.assertEqual(card.real_value, expected[1])
                 self.assertEqual(card.n_cards, expected[2])
                 self.assertEqual(card.flashing, expected[3])

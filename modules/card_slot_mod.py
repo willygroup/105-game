@@ -7,7 +7,7 @@ class CardSlot:
         if type(id) != int or (id not in range(0, 5)):
             raise TypeError("id should be an integer between 0 and 4")
         self.id = id
-        self.showed_value = 0
+        self.shown_value = 0
         self.real_value = 0
         self.n_cards = 0
         self.flashing = False
@@ -54,13 +54,13 @@ class CardSlot:
             else:
                 self.real_value += 1
 
-        self.showed_value = self.real_value
+        self.shown_value = self.real_value
         self.n_cards += 1
 
         if self.real_value > 21:
             self.busted = True
         elif self.n_cards >= 5 and self.real_value <= 21:
-            self.showed_value = 21
+            self.shown_value = 21
 
         return not self.is_busted()
 
