@@ -19,6 +19,24 @@ class GameModel:
             CardSlot(4),
         )
 
+    # try to add
+    # Fixme
+    def check_will_be_busted(self, card_value) -> bool:
+        if card_value == 11:
+            card_value = 1
+        if self.a_slot_is_flashing():
+            return False
+        for slot in self._slots:
+            if slot.showed_value + card_value <= 21:
+                return False
+        return True
+
+    def withdraw_condition(self) -> bool:
+        total = self.get_total()
+        if 100 <= total <= 105:
+            return True
+        return False
+
     def add_card_to_slot(self, slot_id: int, card_value: int) -> bool:
         """
         Add a card_value to a slot and return the `busted` status

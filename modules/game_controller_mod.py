@@ -7,32 +7,48 @@ class GameController:
         self.model = model
         self.view = view
 
+    def get_winning_value(self):
+        total = self.model.get_total()
+        if total == 105:
+            return 10
+        elif total == 104:
+            return 8
+        elif 99 < total < 104:
+            return 1
+        return None
+
     def start_game(self):
         while True:
-            partial_total: int = self.model.get_total()
             card_value = self.model.draw_a_card()
             self.view.show_slots(self.model.get_slots())
             self.view.show_drawn_card(card_value)
 
-            temp_card_value = card_value
-            if card_value == 11:
-                temp_card_value = 1
+            withdraw = False
+            if self.model.withdraw_condition():
+                withdraw = True
 
-            # TODO add this check on controller, then call
-            # self.controller.bust_check(card_value)
-            # self.controller.withdraw_condition()
-            # ...
-            if (
-                not self.model.a_slot_is_flashing()
-                and partial_total < 100
-                and partial_total + temp_card_value > 105
-            ):
-                print("BUSTED")
+            will_be_busted = self.model.check_will_be_busted(card_value)
+
+            if withdraw and will_be_busted:
+                print(f"WIN {self.get_winning_value()}")
+                break
+            elif will_be_busted:
+                print("BUSTED!")
                 break
 
             # ASK FOR THE USER INPUT
-            slot_id = self.view.ask_for_the_slot()
+            slot_id = self.view.ask_for_the_slot(withdraw)
+            print(f"slot_id: {slot_id}")
+            if slot_id is None:
+                print("00")
+                print(f"WIN {self.get_winning_value()}")
+                break
+
             if not self.model.add_card_to_slot(slot_id, card_value):
                 self.view.show_slots(self.model.get_slots())
                 print("BUSTED")
+                break
+
+            if self.model.get_total() == 105:
+                print(f"WIN {self.get_winning_value()}")
                 break

@@ -23,13 +23,23 @@ class GameView:
     def show_drawn_card(self, card_value):
         print(f">>> {card_value} <<<")
 
-    def ask_for_the_slot(self) -> int:
+    def ask_for_the_slot(self, withdraw) -> int:
+
+        text = "Please enter the slot [1, 5] "
+        if withdraw:
+            text += "\nType X to withdraw thw winning: "
+        else:
+            text += ": "
+
         var = 0
-        while var not in range(1, 6):
-            var = input("Please enter the slot [1, 5]: ")
-            try:
-                var = int(var)
-            except Exception:
-                var = 0
+        while var not in range(1, 6) and var != "X":
+            var = input(text)
+            if var != "X":
+                try:
+                    var = int(var)
+                except Exception:
+                    var = 0
+            else:
+                return None
 
         return var - 1
