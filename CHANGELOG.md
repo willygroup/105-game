@@ -1,8 +1,6 @@
 # Project
 
-0.1.0 - unreleased
+0.1.0 - 20220607
 ----------------
-* Added
-* Changed
-* Fixed
+* MVP from command line
 

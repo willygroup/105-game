@@ -1,2 +1,2 @@
 __version__ = "0.1.0"
-__package_name__ = "myproject"
+__package_name__ = "105-game"
