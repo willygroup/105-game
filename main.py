@@ -1,6 +1,6 @@
 #! /usr/bin/env python
 """
-MyProject Description
+105-Game
 """
 
 import gettext
@@ -8,21 +8,11 @@ import locale
 import logging
 import os
 import sys
+import modules
 from modules.game_controller_mod import GameController
 
 from modules.game_model_mod import GameModel
 from modules.game_view_mod import GameView
-
-
-__project_name__ = "myproject"
-
-if getattr(sys, "frozen", False):
-    # If the application is run as a bundle, the PyInstaller bootloader
-    # extends the sys module by a flag frozen=True and sets the app
-    # path into variable _MEIPASS'.
-    dirname = sys._MEIPASS
-else:
-    dirname = os.path.dirname(os.path.abspath(__file__))
 
 
 current_locale, _ = locale.getlocale()
@@ -48,7 +38,7 @@ def main():
 if __name__ == "__main__":
 
     FORMAT = "%(asctime)-15s `%(name)s` => '%(message)s'"
-    log_file = os.path.join("files", f"{__project_name__}.log")
+    log_file = os.path.join("files", f"{modules.__project_name__}.log")
     logging.basicConfig(filename=log_file, level=logging.INFO, format=FORMAT)
     logger = logging.getLogger("main")
 

@@ -10,5 +10,9 @@
     "python.testing.pytestEnabled": false,
     "python.testing.unittestEnabled": true,
     "python.linting.flake8Enabled": true,
+    "python.linting.flake8Args": [
+        "--max-line-length",
+        "99"
+    ],
     "python.linting.enabled": true
 }
