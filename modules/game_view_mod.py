@@ -7,18 +7,24 @@ class GameView:
 
     def show_slots(self, slots):
         slot_txt = ""
+        real_values = ""
+        n_cards_text = ""
         total = 0
         for slot in slots:
-            suffix = ""
+            suffix = " "
             if slot.flashing:
                 suffix = "*"
             elif slot.is_busted():
                 suffix = "#"
-            slot_txt += f"[{slot.shown_value}{suffix}]"
+            slot_txt += f"[ {slot.shown_value:2d}{suffix}]"
+            real_values += f"[ {slot.real_value:2d}{suffix}]"
+            n_cards_text += f"[ {slot.n_cards:2d} ]"
             if slot.id != len(slots) - 1:
                 slot_txt += " "
+                real_values += " "
+                n_cards_text += " "
             total += slot.shown_value
-        print(f"{slot_txt} - Total: {total}")
+        print(f"{slot_txt} - Total: {total}\n{real_values}\n{n_cards_text}")
 
     def show_drawn_card(self, card_value):
         print(f">>> {card_value} <<<")

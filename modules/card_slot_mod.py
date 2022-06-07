@@ -38,6 +38,20 @@ class CardSlot:
                 self.real_value = self.real_value + 1 - 10
             self.flashing = False
 
+    def _add_card_no_flashing(self, card_value: int):
+        """
+        Add a card to the CardBox
+        when the box is not flashing
+        """
+        if card_value == 11:
+            if self.real_value < 11:
+                self.real_value += 11
+                self.flashing = True
+            else:
+                self.real_value = self.real_value + 1
+        else:
+            self.real_value += card_value
+
     def add_card(self, card_value: int) -> bool:
         """
         Add a card to the CardBox
@@ -45,14 +59,16 @@ class CardSlot:
         """
         if self.flashing:
             self._add_card_on_flashing(card_value)
-        elif not self.flashing and card_value <= 10:
-            self.real_value += card_value
-        elif not self.flashing and card_value == 11:
-            if self.real_value <= 10:
-                self.real_value += 11
-                self.flashing = True
-            else:
-                self.real_value += 1
+        else:
+            self._add_card_no_flashing(card_value)
+        # elif not self.flashing and card_value <= 10:
+        #     self.real_value += card_value
+        # elif not self.flashing and card_value == 11:
+        #     if self.real_value <= 10:
+        #         self.real_value += 11
+        #         self.flashing = True
+        #     else:
+        #         self.real_value += 1
 
         self.shown_value = self.real_value
         self.n_cards += 1

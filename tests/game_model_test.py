@@ -102,9 +102,7 @@ class GameModelModule(unittest.TestCase):
 
     def test_draw_a_card(self):
         for _ in range(0, 100):
-            self.assertTrue(
-                GameModel.draw_a_card() in (2, 3, 4, 5, 6, 7, 8, 9, 10, 11)
-            )  #
+            self.assertTrue(GameModel.draw_a_card() in GameModel.cards)  #
 
 
 if __name__ == "__main__":

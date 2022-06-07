@@ -1,6 +1,6 @@
 from random import seed
-from random import randint
 from datetime import datetime
+import random
 
 from modules.card_slot_mod import CardSlot
 
@@ -9,6 +9,22 @@ class GameModel:
     """
     This represent the Game Model
     """
+
+    cards = [
+        ("A", 11),
+        ("2", 2),
+        ("3", 3),
+        ("4", 4),
+        ("5", 5),
+        ("6", 6),
+        ("7", 7),
+        ("8", 8),
+        ("9", 9),
+        ("10", 10),
+        ("J", 10),
+        ("Q", 10),
+        ("K", 10),
+    ]
 
     def __init__(self) -> None:
         """
@@ -64,7 +80,7 @@ class GameModel:
         Return a random value from 1 to 11
         """
         seed(datetime.now().timestamp())
-        return randint(2, 11)
+        return random.choice(GameModel.cards)
 
     def check_will_be_busted(self, card_value) -> bool:
         """
