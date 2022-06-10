@@ -12,7 +12,7 @@ import modules
 from modules.game_controller_mod import GameController
 
 from modules.game_model_mod import GameModel
-from modules.game_view_mod import GameView
+from modules.tui.tui import GameApp
 
 
 current_locale, _ = locale.getlocale()
@@ -26,19 +26,22 @@ _ = dictionary.gettext
 
 def main():
     model = GameModel()
-    view = GameView()
 
-    controller = GameController(model, view)
+    controller = GameController(model)
 
-    view.set_controller(controller)
+    view = GameApp(controller=controller)
 
-    controller.start_game()
+    controller.set_view(view)
+
+    view.run(controller=controller, log="files/tui.log")
+
+    # controller.start_game()  # FIXME the entry point should be in the view!
 
 
 if __name__ == "__main__":
 
     FORMAT = "%(asctime)-15s `%(name)s` => '%(message)s'"
-    log_file = os.path.join("files", f"{modules.__project_name__}.log")
+    log_file = os.path.join("files", f"{modules.__package_name__}.log")
     logging.basicConfig(filename=log_file, level=logging.INFO, format=FORMAT)
     logger = logging.getLogger("main")
 
