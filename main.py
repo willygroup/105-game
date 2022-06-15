@@ -35,8 +35,6 @@ def main():
 
     view.run(controller=controller, log="files/tui.log")
 
-    # controller.start_game()  # FIXME the entry point should be in the view!
-
 
 if __name__ == "__main__":
 

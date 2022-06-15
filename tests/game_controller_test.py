@@ -24,9 +24,8 @@ class GameControllerModule(unittest.TestCase):
 
     def set_up_game_controller(self):
         model = GameModel()
-        view = None
         # model.get_total = MagicMock(return )
-        return GameController(model, view)
+        return GameController(model)
 
     def test_get_winning_value(self):
         for values, expected_winning in test_winning_value_cases:

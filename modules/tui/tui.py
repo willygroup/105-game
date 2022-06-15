@@ -8,6 +8,8 @@ from pyfiglet import Figlet
 from textual.reactive import Reactive
 from rich.console import RenderableType
 
+from modules.game_controller_mod import GameController
+
 
 class FigletText:
     """A renderable to generate figlet text that adapts to fit the container."""
@@ -56,35 +58,28 @@ class Game(GridView):
     LIGHT = "black on rgb(165,165,165)"
     YELLOW = "white on rgb(255,159,7)"
 
-    def set_controller(self, controller):
+    def set_controller(self, controller: GameController):
         self.controller = controller
 
     def on_mount(self) -> None:
 
-        self.extracted_value = 3
+        # self.extracted_value = 3
 
         self.grid.set_gap(1, 1)
         self.grid.set_gutter(1)
         self.grid.set_align("center")
 
-        # # Create rows / columns / areas
+        # Create rows / columns / areas
         self.grid.add_column("col", repeat=5, size=20)
         self.grid.add_row("extract", repeat=1, size=10)
         self.grid.add_row("slots", repeat=1, size=10)
         self.grid.add_row("buttons", repeat=1, size=5)
 
-        # self.grid.add_areas(
-        #     extract="col1-start|col2-end,row1,extract",
-        #     total="col4-start|col5-end,row1,total",
-        #     slots="col1-start|col5-end,row2,slots",
-        #     buttons="col1-start|col5-end,row3",
-        # )
-
         def make_static(text: str, style: str) -> Static:
             """Create a static with the given Figlet label."""
             return Static(FigletText(text), style=style, name=text)
 
-        self.extracted = make_static(str(self.extracted_value), self.LIGHT)
+        self.extracted = make_static(str("-"), self.LIGHT)
         self.total = make_static("105", self.LIGHT)
 
         first_row = [
@@ -108,7 +103,7 @@ class Game(GridView):
             slot_4,
         ]
 
-        self.start_btn = SlotButton("[b]START[/b]", self.LIGHT)
+        self.start_btn = SlotButton("[b]START[/b]", name="start_btn", style=self.LIGHT)
         self.cash_btn = SlotButton("[b]CASH[/b]", self.LIGHT)
 
         third_row = [
@@ -125,9 +120,21 @@ class Game(GridView):
 
         self.status = GameStatus.IDLE
 
-    def update_slot(self, slot_id, card_value):
-        self.controller.add_card_to_slot(int(slot_id), card_value)
-        # pass
+    def draw_a_card(self):
+        self.extracted_value = self.controller.model.draw_a_card()
+        self.extracted.label = FigletText(f"{self.extracted_value}")
+
+    def update_slot(self, slot_id, card_value) -> bool:
+        slot_id = int(slot_id)
+        busted = self.controller.add_card_to_slot(slot_id, card_value)
+        (shown_value, is_flashing, is_busted) = self.controller.get_slot_values(slot_id)
+
+        if is_flashing:  # TODO CHANGE BUTTON STYLE
+            shown_value = f"{shown_value}*"
+
+        self.slots[slot_id].label = FigletText(str(shown_value))
+
+        return busted or is_busted
 
     def handle_button_pressed(self, message: ButtonPressed) -> None:
         """A message sent by the submit button"""
@@ -139,7 +146,17 @@ class Game(GridView):
             match button_name:
                 case "slot_0" | "slot_1" | "slot_2" | "slot_3" | "slot_4":
                     slot_id = button_name.split("_")[1]  # this is safe
-                    self.update_slot(slot_id, self.extracted_value)
+                    busted = self.update_slot(slot_id, self.extracted_value)
+                    if busted:
+                        self.status = GameStatus.BUSTED
+                    else:
+                        self.draw_a_card()
+                case "start_btn":
+                    if self.status == GameStatus.IDLE:
+                        GameStatus.GAMING
+                        self.draw_a_card()
+
+                    # TODO update game status method
                 case _:
                     pass
 
