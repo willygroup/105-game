@@ -9,6 +9,9 @@ class GameController:
     def set_view(self, view):
         self.view = view
 
+    def get_total(self) -> int:
+        return self.model.get_total()
+
     def get_winning_value(self):
         total = self.model.get_total()
         if total == 105:

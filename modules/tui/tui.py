@@ -61,6 +61,12 @@ class Game(GridView):
     def set_controller(self, controller: GameController):
         self.controller = controller
 
+    @staticmethod
+    def make_static(text: str, style: str) -> Static:
+        """Create a static with the given Figlet label."""
+        # return Static(FigletText(text), style=style, name=text)
+        return SlotButton(FigletText(text), name=text, style=style)
+
     def on_mount(self) -> None:
 
         # self.extracted_value = 3
@@ -75,18 +81,14 @@ class Game(GridView):
         self.grid.add_row("slots", repeat=1, size=10)
         self.grid.add_row("buttons", repeat=1, size=5)
 
-        def make_static(text: str, style: str) -> Static:
-            """Create a static with the given Figlet label."""
-            return Static(FigletText(text), style=style, name=text)
-
-        self.extracted = make_static(str("-"), self.LIGHT)
-        self.total = make_static("105", self.LIGHT)
+        self.extracted = self.make_static(str("-"), self.LIGHT)
+        self.total = self.make_static("0", self.LIGHT)
 
         first_row = [
             self.extracted,
-            make_static("", self.DARK),
-            make_static("", self.DARK),
-            make_static("", self.DARK),
+            self.make_static("", self.DARK),
+            self.make_static("", self.DARK),
+            self.make_static("", self.DARK),
             self.total,
         ]
 
@@ -108,9 +110,9 @@ class Game(GridView):
 
         third_row = [
             self.start_btn,
-            make_static("", self.DARK),
-            make_static("", self.DARK),
-            make_static("", self.DARK),
+            self.make_static("", self.DARK),
+            self.make_static("", self.DARK),
+            self.make_static("", self.DARK),
             self.cash_btn,
         ]
 
@@ -122,7 +124,10 @@ class Game(GridView):
 
     def draw_a_card(self):
         self.extracted_value = self.controller.model.draw_a_card()
-        self.extracted.label = FigletText(f"{self.extracted_value}")
+        self.extracted.label = FigletText(f"{self.extracted_value[0]}")
+
+    def update_total(self):
+        self.total.label = FigletText(f"{self.controller.get_total()}")
 
     def update_slot(self, slot_id, card_value) -> bool:
         slot_id = int(slot_id)
@@ -146,10 +151,12 @@ class Game(GridView):
             match button_name:
                 case "slot_0" | "slot_1" | "slot_2" | "slot_3" | "slot_4":
                     slot_id = button_name.split("_")[1]  # this is safe
-                    busted = self.update_slot(slot_id, self.extracted_value)
-                    if busted:
+                    busted = self.update_slot(slot_id, self.extracted_value[1])
+                    if busted is True:
+                        print("BUSTED")  # DELETEME
                         self.status = GameStatus.BUSTED
                     else:
+                        self.update_total()
                         self.draw_a_card()
                 case "start_btn":
                     if self.status == GameStatus.IDLE:

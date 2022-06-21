@@ -71,7 +71,7 @@ class CardSlot:
         elif self.n_cards >= 5 and self.real_value <= 21:
             self.shown_value = 21
 
-        return not self.is_busted()
+        return self.is_busted()
 
     def is_busted(self):
         """

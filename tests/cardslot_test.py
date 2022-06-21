@@ -22,7 +22,7 @@ good_args_list = [
     (4, 4),
 ]
 
-# (shown_value, real_value, n_cards, flashing, busted),<card>, expected
+# (shown_value, real_value, n_cards, flashing, busted),<card>, expected_values
 add_card_list = [
     ((3, 3, 1, False, False), 5, (8, 8, 2, False, False)),
     ((3, 3, 1, False, False), 11, (14, 14, 2, True, False)),
@@ -73,7 +73,7 @@ class CardBoxModule(TestCase):
                 self.assertEqual(card.n_cards, expected[2])
                 self.assertEqual(card.flashing, expected[3])
                 self.assertEqual(card.busted, expected[4])
-                self.assertEqual(res, not expected[4])
+                self.assertEqual(res, expected[4])
 
 
 if __name__ == "__main__":
