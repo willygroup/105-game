@@ -9,6 +9,9 @@ class GameController:
     def set_view(self, view):
         self.view = view
 
+    def restart(self):
+        self.model.restart()
+
     def get_total(self) -> int:
         return self.model.get_total()
 

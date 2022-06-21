@@ -1,4 +1,6 @@
 from enum import Enum
+import threading
+import time
 from rich import console
 from textual.app import App
 from textual.views import GridView
@@ -141,6 +143,20 @@ class Game(GridView):
 
         return busted or is_busted
 
+    def write_on_slots(self, text: str):
+        if len(text) <= 5:
+            chars = text.__iter__()
+            for i, char in enumerate(chars):
+                self.slots[i].label = FigletText(char)
+
+    def handle_busted(self):
+        self.write_on_slots("BOOM!")
+
+    def restart(self):
+        self.controller.restart()
+        self.write_on_slots("00000")
+        self.update_total()
+
     def handle_button_pressed(self, message: ButtonPressed) -> None:
         """A message sent by the submit button"""
         assert isinstance(message.sender, Button)
@@ -150,17 +166,22 @@ class Game(GridView):
         if self.submit:
             match button_name:
                 case "slot_0" | "slot_1" | "slot_2" | "slot_3" | "slot_4":
-                    slot_id = button_name.split("_")[1]  # this is safe
-                    busted = self.update_slot(slot_id, self.extracted_value[1])
-                    if busted is True:
-                        print("BUSTED")  # DELETEME
-                        self.status = GameStatus.BUSTED
-                    else:
-                        self.update_total()
-                        self.draw_a_card()
+                    if self.status == GameStatus.GAMING:
+                        slot_id = button_name.split("_")[1]  # this is safe
+                        busted = self.update_slot(slot_id, self.extracted_value[1])
+                        if busted is True:
+                            self.status = GameStatus.BUSTED
+                            self.handle_busted()
+                        else:
+                            self.update_total()
+                            self.draw_a_card()
                 case "start_btn":
                     if self.status == GameStatus.IDLE:
-                        GameStatus.GAMING
+                        self.status = GameStatus.GAMING
+                        self.draw_a_card()
+                    elif self.status == GameStatus.BUSTED:
+                        self.restart()
+                        self.status = GameStatus.GAMING
                         self.draw_a_card()
 
                     # TODO update game status method

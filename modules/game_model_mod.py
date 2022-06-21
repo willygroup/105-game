@@ -30,6 +30,9 @@ class GameModel:
         """
         Initialize the model
         """
+        self.restart()
+
+    def restart(self):
         self._slots = (
             CardSlot(0),
             CardSlot(1),
