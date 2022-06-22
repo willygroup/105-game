@@ -1,5 +1,9 @@
-# My Project
-Description
+# 105 Game
+This project emulate the 105 Premium d'Oro 90's slot machine
+
+# RULES
+
+# TODO
 
 ## Python Environment
 ### Linux
@@ -55,11 +59,6 @@ $ .\create_exe.ps1
  - python 
  - pip python module
  - venv python module
-
-
-# How to use `MyProject`
-
-## TODO
 
 ## Start the application with a different language in linux
  ```bash
