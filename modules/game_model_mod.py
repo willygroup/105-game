@@ -77,8 +77,7 @@ class GameModel:
                 return True
         return False
 
-    @staticmethod
-    def draw_a_card():
+    def draw_a_card(self):
         """
         Return a random value from 1 to 11
         """

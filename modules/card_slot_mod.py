@@ -12,6 +12,7 @@ class CardSlot:
         self.n_cards = 0
         self.flashing = False
         self.busted = False
+        self.cards_no_limit = 5
 
     def _add_card_on_flashing(self, card_value: int):
         """
@@ -45,8 +46,11 @@ class CardSlot:
         """
         if card_value == 11:
             if self.real_value < 11:
-                self.real_value += 11
-                self.flashing = True
+                if self.n_cards >= self.cards_no_limit:
+                    self.real_value = self.real_value + 1
+                else:
+                    self.real_value += 11
+                    self.flashing = True
             else:
                 self.real_value = self.real_value + 1
         else:
@@ -68,7 +72,7 @@ class CardSlot:
 
         if self.real_value > 21:
             self.busted = True
-        elif self.n_cards >= 5 and self.real_value <= 21:
+        elif self.n_cards >= self.cards_no_limit and self.real_value <= 21:
             self.shown_value = 21
 
         return self.is_busted()

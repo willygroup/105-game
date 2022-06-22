@@ -33,4 +33,10 @@ class GameController:
 
     def get_slot_values(self, slot_id) -> Tuple:
         slot = self.model.get_slots()[slot_id]
-        return (slot.shown_value, slot.real_value, slot.flashing, slot.is_busted())
+        return (
+            slot.shown_value,
+            slot.real_value,
+            slot.n_cards,
+            slot.flashing,
+            slot.is_busted(),
+        )

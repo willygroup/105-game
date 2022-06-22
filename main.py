@@ -24,22 +24,24 @@ dictionary.install()
 _ = dictionary.gettext
 
 
-def main():
+def main(debug_mode: bool):
     model = GameModel()
 
     controller = GameController(model)
 
-    view = GameApp(controller=controller)
+    view = GameApp(controller=controller, debug_mode=debug_mode)
 
     controller.set_view(view)
 
-    view.run(controller=controller, log="files/tui.log")
+    view.run(controller=controller, debug_mode=debug_mode, log="files/tui.log")
 
 
 if __name__ == "__main__":
 
-    if len(sys.argv) == 2 and sys.argv[1] == "--debug":
+    debug_mode = False
+    if "--debug" in sys.argv:
         print("DEBUG MODE")
+        debug_mode = True
 
     FORMAT = "%(asctime)-15s `%(name)s` => '%(message)s'"
     log_file = os.path.join("files", f"{modules.__package_name__}.log")
@@ -48,7 +50,7 @@ if __name__ == "__main__":
 
     logger.info("App Started")
 
-    main()
+    main(debug_mode)
 
     logger.info("App Closed")
 
