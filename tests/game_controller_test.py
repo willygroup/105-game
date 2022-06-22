@@ -63,8 +63,9 @@ class GameControllerModule(unittest.TestCase):
         slot = controller.get_slot_values(3)
         self.assertEqual(slot[0], 15)
         self.assertEqual(slot[1], 15)
-        self.assertEqual(slot[2], True)
-        self.assertEqual(slot[3], False)
+        self.assertEqual(slot[2], 3)
+        self.assertEqual(slot[3], True)
+        self.assertEqual(slot[4], False)
 
 
 if __name__ == "__main__":
