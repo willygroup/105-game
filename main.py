@@ -38,6 +38,9 @@ def main():
 
 if __name__ == "__main__":
 
+    if len(sys.argv) == 2 and sys.argv[1] == "--debug":
+        print("DEBUG MODE")
+
     FORMAT = "%(asctime)-15s `%(name)s` => '%(message)s'"
     log_file = os.path.join("files", f"{modules.__package_name__}.log")
     logging.basicConfig(filename=log_file, level=logging.INFO, format=FORMAT)

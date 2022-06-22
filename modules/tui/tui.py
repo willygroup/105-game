@@ -47,9 +47,10 @@ class SlotButton(Button):
 
 
 class GameStatus(Enum):
-    IDLE = (0,)
-    GAMING = (1,)
+    IDLE = 0
+    GAMING = 1
     BUSTED = 2
+    WIN = 3
 
 
 class Game(GridView):
@@ -69,8 +70,6 @@ class Game(GridView):
         return SlotButton(FigletText(text), name=text, style=style)
 
     def on_mount(self) -> None:
-
-        # self.extracted_value = 3
 
         self.grid.set_gap(1, 1)
         self.grid.set_gutter(1)
@@ -112,7 +111,7 @@ class Game(GridView):
         ]
 
         self.start_btn = SlotButton("[b]START[/b]", name="start_btn", style=self.LIGHT)
-        self.cash_btn = SlotButton("[b]CASH[/b]", self.LIGHT)
+        self.cash_btn = SlotButton("[b]CASH[/b]", name="cash_btn", style=self.LIGHT)
 
         third_row = [
             self.start_btn,
@@ -162,16 +161,28 @@ class Game(GridView):
             chars = text.__iter__()
             for i, char in enumerate(chars):
                 self.slots[i].label = FigletText(char)
-                self.slots_real_value[i].label = FigletText(char)  # DELETE
+
+    # DELETEME
+    def write_on_t_slots(self, text: str):
+        if len(text) <= 5:
+            chars = text.__iter__()
+            for i, char in enumerate(chars):
+                self.slots_real_value[i].label = FigletText(char)
 
     def handle_busted(self):
         self.status = GameStatus.BUSTED
         self.write_on_slots("BOOM!")
         self.sounds.play_loser()
 
+    def handle_winning(self, winnings):
+        self.status = GameStatus.WIN
+        self.write_on_slots(f"WIN{winnings:02d}")
+        self.sounds.play_winner(winnings)
+
     def restart(self):
         self.controller.restart()
         self.write_on_slots("00000")
+        self.write_on_t_slots("00000")  # DEBUG
         self.update_total()
 
     def handle_button_pressed(self, message: ButtonPressed) -> None:
@@ -196,15 +207,29 @@ class Game(GridView):
                             if self.controller.check_will_be_busted(
                                 self.extracted_value[1]
                             ):
-                                self.handle_busted()
+                                winning_value = self.controller.get_winning_value()
+                                if winning_value is None:
+                                    self.handle_busted()
+                                else:
+                                    self.handle_winning(winning_value)
                 case "start_btn":
                     if self.status == GameStatus.IDLE:
                         self.status = GameStatus.GAMING
                         self.draw_a_card()
-                    elif self.status == GameStatus.BUSTED:
+                    elif (
+                        self.status == GameStatus.BUSTED
+                        or self.status == GameStatus.WIN
+                    ):
                         self.restart()
                         self.status = GameStatus.GAMING
                         self.draw_a_card()
+
+                case "cash_btn":
+                    winning_value = self.controller.get_winning_value()
+                    if winning_value is None:
+                        pass
+                    else:
+                        self.handle_winning(winning_value)
 
                     # TODO update game status method
                 case _:
