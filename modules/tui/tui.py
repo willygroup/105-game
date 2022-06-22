@@ -1,6 +1,4 @@
 from enum import Enum
-import threading
-import time
 from rich import console
 from textual.app import App
 from textual.views import GridView
@@ -81,6 +79,7 @@ class Game(GridView):
         self.grid.add_column("col", repeat=5, size=20)
         self.grid.add_row("extract", repeat=1, size=10)
         self.grid.add_row("slots", repeat=1, size=10)
+        self.grid.add_row("t_slots", repeat=1, size=10)  # DELETE
         self.grid.add_row("buttons", repeat=1, size=5)
 
         self.extracted = self.make_static(str("-"), self.LIGHT)
@@ -94,17 +93,21 @@ class Game(GridView):
             self.total,
         ]
 
-        slot_0 = SlotButton(FigletText("0"), name="slot_0", style=self.YELLOW)
-        slot_1 = SlotButton(FigletText("0"), name="slot_1", style=self.YELLOW)
-        slot_2 = SlotButton(FigletText("0"), name="slot_2", style=self.YELLOW)
-        slot_3 = SlotButton(FigletText("0"), name="slot_3", style=self.YELLOW)
-        slot_4 = SlotButton(FigletText("0"), name="slot_4", style=self.YELLOW)
         self.slots = [
-            slot_0,
-            slot_1,
-            slot_2,
-            slot_3,
-            slot_4,
+            SlotButton(FigletText("0"), name="slot_0", style=self.YELLOW),
+            SlotButton(FigletText("0"), name="slot_1", style=self.YELLOW),
+            SlotButton(FigletText("0"), name="slot_2", style=self.YELLOW),
+            SlotButton(FigletText("0"), name="slot_3", style=self.YELLOW),
+            SlotButton(FigletText("0"), name="slot_4", style=self.YELLOW),
+        ]
+
+        # TMP DELETE
+        self.slots_real_value = [
+            SlotButton(FigletText("0"), name="t_slot_0", style=self.YELLOW),
+            SlotButton(FigletText("0"), name="t_slot_1", style=self.YELLOW),
+            SlotButton(FigletText("0"), name="t_slot_2", style=self.YELLOW),
+            SlotButton(FigletText("0"), name="t_slot_3", style=self.YELLOW),
+            SlotButton(FigletText("0"), name="t_slot_4", style=self.YELLOW),
         ]
 
         self.start_btn = SlotButton("[b]START[/b]", name="start_btn", style=self.LIGHT)
@@ -120,6 +123,7 @@ class Game(GridView):
 
         self.grid.place(*first_row)
         self.grid.place(*self.slots)
+        self.grid.place(*self.slots_real_value)  # DELETE
         self.grid.place(*third_row)
 
         self.status = GameStatus.IDLE
@@ -132,14 +136,21 @@ class Game(GridView):
         self.total.label = FigletText(f"{self.controller.get_total()}")
 
     def update_slot(self, slot_id, card_value) -> bool:
+
         slot_id = int(slot_id)
         busted = self.controller.add_card_to_slot(slot_id, card_value)
-        (shown_value, is_flashing, is_busted) = self.controller.get_slot_values(slot_id)
+        (
+            shown_value,
+            real_value,
+            is_flashing,
+            is_busted,
+        ) = self.controller.get_slot_values(slot_id)
 
         if is_flashing:  # TODO CHANGE BUTTON STYLE
             shown_value = f"{shown_value}*"
 
         self.slots[slot_id].label = FigletText(str(shown_value))
+        self.slots_real_value[slot_id].label = FigletText(str(real_value))  # DELETE
 
         return busted or is_busted
 
@@ -148,6 +159,7 @@ class Game(GridView):
             chars = text.__iter__()
             for i, char in enumerate(chars):
                 self.slots[i].label = FigletText(char)
+                self.slots_real_value[i].label = FigletText(char)  # DELETE
 
     def handle_busted(self):
         self.write_on_slots("BOOM!")
@@ -168,13 +180,20 @@ class Game(GridView):
                 case "slot_0" | "slot_1" | "slot_2" | "slot_3" | "slot_4":
                     if self.status == GameStatus.GAMING:
                         slot_id = button_name.split("_")[1]  # this is safe
+
                         busted = self.update_slot(slot_id, self.extracted_value[1])
+
                         if busted is True:
                             self.status = GameStatus.BUSTED
                             self.handle_busted()
                         else:
                             self.update_total()
                             self.draw_a_card()
+                            if self.controller.check_will_be_busted(
+                                self.extracted_value[1]
+                            ):
+                                self.status = GameStatus.BUSTED
+                                self.handle_busted()
                 case "start_btn":
                     if self.status == GameStatus.IDLE:
                         self.status = GameStatus.GAMING

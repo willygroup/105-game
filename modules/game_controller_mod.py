@@ -15,6 +15,9 @@ class GameController:
     def get_total(self) -> int:
         return self.model.get_total()
 
+    def check_will_be_busted(self, card_value) -> bool:
+        return self.model.check_will_be_busted(card_value)
+
     def get_winning_value(self):
         total = self.model.get_total()
         if total == 105:
@@ -30,4 +33,4 @@ class GameController:
 
     def get_slot_values(self, slot_id) -> Tuple:
         slot = self.model.get_slots()[slot_id]
-        return (slot.shown_value, slot.flashing, slot.is_busted())
+        return (slot.shown_value, slot.real_value, slot.flashing, slot.is_busted())
