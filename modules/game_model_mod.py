@@ -30,6 +30,9 @@ class GameModel:
         """
         Initialize the model
         """
+        self.restart()
+
+    def restart(self):
         self._slots = (
             CardSlot(0),
             CardSlot(1),
@@ -74,8 +77,7 @@ class GameModel:
                 return True
         return False
 
-    @staticmethod
-    def draw_a_card():
+    def draw_a_card(self):
         """
         Return a random value from 1 to 11
         """

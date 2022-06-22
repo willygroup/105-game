@@ -1,11 +1,22 @@
+from typing import Tuple
 from modules.game_model_mod import GameModel
-from modules.game_view_mod import GameView
 
 
 class GameController:
-    def __init__(self, model: GameModel, view: GameView) -> None:
+    def __init__(self, model: GameModel) -> None:
         self.model = model
+
+    def set_view(self, view):
         self.view = view
+
+    def restart(self):
+        self.model.restart()
+
+    def get_total(self) -> int:
+        return self.model.get_total()
+
+    def check_will_be_busted(self, card_value) -> bool:
+        return self.model.check_will_be_busted(card_value)
 
     def get_winning_value(self):
         total = self.model.get_total()
@@ -17,38 +28,15 @@ class GameController:
             return 1
         return None
 
-    def start_game(self):
-        while True:
-            card_value = self.model.draw_a_card()
-            self.view.show_slots(self.model.get_slots())
-            self.view.show_drawn_card(card_value[0])
+    def add_card_to_slot(self, slot_id, card_value) -> bool:
+        return self.model.add_card_to_slot(slot_id, card_value)
 
-            withdraw = False
-            if self.model.withdraw_condition():
-                withdraw = True
-
-            will_be_busted = self.model.check_will_be_busted(card_value[1])
-
-            if withdraw and will_be_busted:
-                print(f"WIN {self.get_winning_value()}")
-                break
-            elif will_be_busted:
-                print("BUSTED!")
-                break
-
-            # ASK FOR THE USER INPUT
-            slot_id = self.view.ask_for_the_slot(withdraw)
-
-            if slot_id is None:
-                print(f"WIN {self.get_winning_value()}")
-                break
-
-            if not self.model.add_card_to_slot(slot_id, card_value[1]):
-                self.view.show_slots(self.model.get_slots())
-                print("BUSTED")
-                break
-
-            if self.model.get_total() == 105:
-                self.view.show_slots(self.model.get_slots())
-                print(f"WIN {self.get_winning_value()}")
-                break
+    def get_slot_values(self, slot_id) -> Tuple:
+        slot = self.model.get_slots()[slot_id]
+        return (
+            slot.shown_value,
+            slot.real_value,
+            slot.n_cards,
+            slot.flashing,
+            slot.is_busted(),
+        )

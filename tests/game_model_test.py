@@ -101,8 +101,9 @@ class GameModelModule(unittest.TestCase):
                 self.assertEqual(model.withdraw_condition(), withdraw_cond)
 
     def test_draw_a_card(self):
-        for _ in range(0, 100):
-            self.assertTrue(GameModel.draw_a_card() in GameModel.cards)  #
+        model = GameModel()
+        for _ in range(0, 1000):
+            self.assertTrue(model.draw_a_card() in GameModel.cards)  #
 
 
 if __name__ == "__main__":
