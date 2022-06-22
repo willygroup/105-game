@@ -9,6 +9,7 @@ from textual.reactive import Reactive
 from rich.console import RenderableType
 
 from modules.game_controller_mod import GameController
+from modules.sounds_mod import Sounds
 
 
 class FigletText:
@@ -126,6 +127,8 @@ class Game(GridView):
         self.grid.place(*self.slots_real_value)  # DELETE
         self.grid.place(*third_row)
 
+        self.sounds = Sounds()
+
         self.status = GameStatus.IDLE
 
     def draw_a_card(self):
@@ -162,7 +165,9 @@ class Game(GridView):
                 self.slots_real_value[i].label = FigletText(char)  # DELETE
 
     def handle_busted(self):
+        self.status = GameStatus.BUSTED
         self.write_on_slots("BOOM!")
+        self.sounds.play_loser()
 
     def restart(self):
         self.controller.restart()
@@ -184,7 +189,6 @@ class Game(GridView):
                         busted = self.update_slot(slot_id, self.extracted_value[1])
 
                         if busted is True:
-                            self.status = GameStatus.BUSTED
                             self.handle_busted()
                         else:
                             self.update_total()
@@ -192,7 +196,6 @@ class Game(GridView):
                             if self.controller.check_will_be_busted(
                                 self.extracted_value[1]
                             ):
-                                self.status = GameStatus.BUSTED
                                 self.handle_busted()
                 case "start_btn":
                     if self.status == GameStatus.IDLE:
