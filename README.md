@@ -3,7 +3,18 @@ This project emulate the 105 Premium d'Oro 90's slot machine
 
 # RULES
 
-# TODO
+ - The target of this game is to obtain 21 on each slot
+
+ - Draw a card
+ - Add the card to a slot content.
+ - If the total of the slot is greater than *21* you lose the game
+ - If the card drawn is "A" it's value is *1* if the value in the slot
+   is lower that 11 otherwise its value is *11*. The slot start to flash 
+   (if wasn't flashing before)
+ - If in a slot you add more than 5 cards its value goes to *21* (but its 
+   inner value is the one you reached by adding the cards so you can continue
+   to add cards until you reach 21)
+ - ...
 
 ## Python Environment
 ### Linux
