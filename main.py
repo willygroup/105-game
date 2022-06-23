@@ -12,7 +12,7 @@ import modules
 from modules.game_controller_mod import GameController
 
 from modules.game_model_mod import GameModel
-from modules.tui.tui import GameApp
+from modules.gui.tui import GameApp
 
 
 current_locale, _ = locale.getlocale()

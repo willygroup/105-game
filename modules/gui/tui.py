@@ -9,7 +9,7 @@ from textual.reactive import Reactive
 from rich.console import RenderableType
 
 from modules.game_controller_mod import GameController
-from modules.sounds_mod import Sounds
+from modules.gui.sounds_mod import Sounds
 
 
 class FigletText:
