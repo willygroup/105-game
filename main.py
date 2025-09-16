@@ -13,15 +13,7 @@ from modules.game_controller_mod import GameController
 
 from modules.game_model_mod import GameModel
 from modules.gui.tui import GameApp
-
-
-current_locale, _ = locale.getlocale()
-if current_locale == "Italian_Italy":
-    current_locale = "it_IT"
-locale_path = os.path.join("files", "locale")
-dictionary = gettext.translation("main", locale_path, [current_locale])
-dictionary.install()
-_ = dictionary.gettext
+from modules.paths import Paths
 
 
 def main(debug_mode: bool):
@@ -29,11 +21,13 @@ def main(debug_mode: bool):
 
     controller = GameController(model)
 
-    view = GameApp(controller=controller, debug_mode=debug_mode)
+    view = GameApp(
+        controller=controller, debug_mode=debug_mode, log=Paths.file("105-game.log")
+    )
 
     controller.set_view(view)
 
-    view.run(controller=controller, debug_mode=debug_mode, log="files/tui.log")
+    view.run()
 
 
 if __name__ == "__main__":

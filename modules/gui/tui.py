@@ -1,11 +1,13 @@
 from enum import Enum
 from rich import console
 from textual.app import App
-from textual.views import GridView
+from textual.views._grid_view import GridView
+
+
 from rich.text import Text
 from textual.widgets import Button, Static, ButtonPressed
 from pyfiglet import Figlet
-from textual.reactive import Reactive
+from textual.reactive import reactive
 from rich.console import RenderableType
 
 from modules.game_controller_mod import GameController
@@ -40,7 +42,7 @@ class FigletText:
 
 class SlotButton(Button):
 
-    clicked: Reactive[RenderableType] = Reactive(False)
+    clicked: Reactive[RenderableType] = reactive(False)
 
     def on_click(self) -> None:
         self.clicked = True
