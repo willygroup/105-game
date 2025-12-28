@@ -13,7 +13,7 @@ dependencies = [
   "pylint",
   "gitpython",
   "tomli",
-  "playsound",
+  "playsound3",
   "rich",
   "pyfiglet",
   "textual",

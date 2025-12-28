@@ -15,13 +15,13 @@ with open(os.path.join(Paths.base, "pyproject.toml"), "rb") as proj_file:
     __githash__ = _METADATA["tool"]["myproject"]["githash"]
 
 
-CURRENT_LOCALE, _ = locale.getlocale()
-if CURRENT_LOCALE == "Italian_Italy":
-    CURRENT_LOCALE = "it_IT"
+current_locale, _ = locale.getlocale()
+if current_locale == "Italian_Italy":
+    current_locale = "it_IT"
 else:
-    CURRENT_LOCALE = "en_US"
+    current_locale = "en_US"
 
-locale_path = Paths.locales
-dictionary = gettext.translation("messages", locale_path, [CURRENT_LOCALE])
+dictionary = gettext.translation("main", Paths.locales, [current_locale])
+
 dictionary.install()
 _ = dictionary.gettext
